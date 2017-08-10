@@ -42,11 +42,13 @@ int fd_sock_recv;
 
 struct T_UDP_DEVICE udp_device;
 
+static struct sockaddr_in udp_mysendto_addr;//服务器用于接收的socket
+
 static struct sockaddr_in udp_myrecv_addr;//服务器用于接收的socket
 static struct sockaddr_in udp_sendto_addr;//服务器用于发送的socket
 static struct sockaddr_in client_addr;//服务器用来保存客户端的发送socket，把客户端的socket属性保存在client_addr
 
-int open_udp_dev(char* ip_sendto, int port_sendto, int port_myrecv)
+int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_myrecv)
 {
     /*
      * 指定了发送目标的端口为port_sendto，也就是如果要发送给服务器，必须知道服务器哪个端口是会处理我的数据
@@ -61,8 +63,18 @@ int open_udp_dev(char* ip_sendto, int port_sendto, int port_myrecv)
     sockaddr_size = sizeof(struct sockaddr_in);
     bzero((char*)&udp_sendto_addr, sockaddr_size);
     udp_sendto_addr.sin_family = AF_INET;
-    udp_sendto_addr.sin_addr.s_addr = inet_addr(ip_sendto);
+    //udp_sendto_addr.sin_addr.s_addr = inet_addr(ip_sendto);
+    //inet_pton(AF_INET, "10.108.16.163", &udp_sendto_addr.sin_addr);
+    inet_pton(AF_INET, ip_sendto, &udp_sendto_addr.sin_addr);
+
+
+
+    //udp_sendto_addr.sin_addr.s_addr = inet_addr("10.108.16.163");
+    //udp_sendto_addr.sin_addr.s_addr = INADDR_ANY;
     udp_sendto_addr.sin_port = htons(port_sendto);
+    printf("port_sendto=%d\n",port_sendto);
+    printf("udp_sendto_addr.sin_port=%d\n",udp_sendto_addr.sin_port);
+
     /*建立“发送”套接字*/
     fd_sock_send = socket(AF_INET, SOCK_DGRAM, 0);
     if (fd_sock_send == -1)
@@ -73,8 +85,36 @@ int open_udp_dev(char* ip_sendto, int port_sendto, int port_myrecv)
     }
     else
     {
-        //printf("udp send ini ok!\n");
+        printf("udp send ini ok!\n");
     }
+
+    /*
+     * 绑定发送的端口
+     */
+
+    /*设置本机的接收ip地址和端口，但是接收的ip不指定，因为任何的ip都有可能给我发数据呀*/
+	sockaddr_size = sizeof(struct sockaddr_in);
+	bzero((char*)&udp_mysendto_addr, sockaddr_size);
+	udp_mysendto_addr.sin_family = AF_INET;
+	udp_mysendto_addr.sin_addr.s_addr = inet_addr("10.108.16.163");
+	udp_mysendto_addr.sin_port = htons(49000);
+
+    /* 绑定套接口 */
+     //if(-1 == (bind(fd_sock_send,(struct sockaddr*)&udp_sendto_addr,sizeof(struct sockaddr_in))))
+    if(-1 == (bind(fd_sock_send,(struct sockaddr*)&udp_mysendto_addr,sizeof(struct sockaddr_in))))
+     {
+      perror("Server Bind Failed:");
+      //exit(1);
+     }
+     else
+     {
+    	 printf("bind success\n");
+
+     }
+
+
+
+
 
     /*设置本机的接收ip地址和端口，但是接收的ip不指定，因为任何的ip都有可能给我发数据呀*/
     sockaddr_size = sizeof(struct sockaddr_in);
@@ -131,25 +171,21 @@ int open_udp_dev(char* ip_sendto, int port_sendto, int port_myrecv)
 
 int send_udp_data(unsigned char *buf, unsigned int len)
 {
-    int m_head;
+    int m_tail;
     int m_len;
     unsigned char m_sendbuf[UDP_RCV_BUF_SIZE];
 
     static unsigned int m_packcnt = 0;
 
     /*
-     * 帧头0xa55a5aa5 4个字节
-     * 包的计数 4个字节
-     * 包的长度 4个字节
-     * 接着就是数据
+     * 帧尾0x12345678 4个字节
      */
-    m_head = htonl(UDP_PACKET_HEAD);
-    memcpy(m_sendbuf, &m_head, 4);
-    m_packcnt++;
-    memcpy(&m_sendbuf[4], &m_packcnt, 4);
-    memcpy(&m_sendbuf[8], &len, 4);
-    memcpy(&m_sendbuf[12], buf, len);
-    m_len = 12 + len;
+    memcpy(m_sendbuf, buf, len);
+
+
+    m_tail = htonl(UDP_PACKET_END);
+    memcpy(&m_sendbuf[len], &m_tail, 4);
+    m_len = 4 + len;
 
 #if 0
     int i=0;

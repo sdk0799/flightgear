@@ -8,6 +8,31 @@
 #ifndef UDP_H_
 #define UDP_H_
 
+/*
+ * 为了进行转换 bsd socket提供了转换的函数 有下面四个
+ * htons 把unsigned short类型从主机序转换到网络序
+ *	htonl 把unsigned long类型从主机序转换到网络序
+ * ntohs 把unsigned short类型从网络序转换到主机序
+ *	ntohl 把unsigned long类型从网络序转换到主机序
+ * 网络与主机字节转换函数:htons ntohs htonl ntohl (s 就是short l是long h是host n是network)
+ */
+
+/*
+ *其实htonl这些函数最后调用的还是--bswap，所以我这里直接用了__bswap函数
+uint32_t
+htonl (x)
+uint32_t x;
+{
+    #if BYTE_ORDER == BIG_ENDIAN
+       return x;
+    #elif BYTE_ORDER == LITTLE_ENDIAN
+       return __bswap_32 (x);
+    #else
+       # error "What kind of system is this?"
+    #endif
+}
+ */
+
 //#define IP_SEND_TO "127.0.0.1"
 #define IP_SEND_TO "10.108.17.250"
 #define PORT_SENT_TO 49000
@@ -22,7 +47,7 @@ struct T_UDP_DEVICE
 
 extern unsigned char udp_recvbuf[2000];
 
-int open_udp_dev(char* ip_sendto, int port_sendto, int port_myrecv);
+int open_udp_dev(char* ip_sendto, unsigned int port_sendto,unsigned int port_myrecv);
 int read_udp_data(unsigned char *buf, unsigned int len);
 int send_udp_data(unsigned char *buf, unsigned int len);
 int close_udp_dev();
