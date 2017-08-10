@@ -52,7 +52,8 @@ int main()
 	* 这一部分写程序的初始化
 	*/
 
-	open_udp_dev(IP_SEND_TO, 49000, PORT_RECEIVE);
+	//open_udp_dev(IP_SEND_TO, 49000, PORT_RECEIVE);
+	open_udp_dev(IP_SEND_TO, PORT_SENT_TO, PORT_RECEIVE);
 
 	/***************************/
 	/***************************到此初始化部分结束**********************************************/
@@ -137,17 +138,17 @@ int main()
 			/*
 			* 可以直接把程序写在这里也可以写在loopslow函数里
 			*/
-			ap2fg.throttle0 = 0.9;
-			ap2fg.throttle1 = 0.9;
-			ap2fg.throttle2 = 0.9;
+			ap2fg.throttle0 = 0.6;
+			ap2fg.throttle1 = 0.7;
+			ap2fg.throttle2 = 0.8;
 			ap2fg.throttle3 = 0.9;
 			ap2fg.latitude_deg = 100;
 			ap2fg.longitude_deg = 100;
-			ap2fg.altitude_ft = 100;
+			ap2fg.altitude_ft = 30;
 			ap2fg.altitude_agl_ft = 100;
-			ap2fg.roll_deg = 100;
-			ap2fg.pitch_deg = 100;
-			ap2fg.heading_deg = 100;
+			ap2fg.roll_deg = 10;
+			ap2fg.pitch_deg = 10;
+			ap2fg.heading_deg = 10;
 	//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
 	//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
 	//		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
