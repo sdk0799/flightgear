@@ -138,17 +138,17 @@ int main()
 			/*
 			* 可以直接把程序写在这里也可以写在loopslow函数里
 			*/
-			ap2fg.throttle0 = 0.6;
-			ap2fg.throttle1 = 0.7;
-			ap2fg.throttle2 = 0.8;
-			ap2fg.throttle3 = 0.9;
+			ap2fg.throttle0 = 0.2;
+			ap2fg.throttle1 = 0.3;
+			ap2fg.throttle2 = 0.4;
+			ap2fg.throttle3 = 0.5;
 			ap2fg.latitude_deg = 100;
 			ap2fg.longitude_deg = 100;
 			ap2fg.altitude_ft = 30;
 			ap2fg.altitude_agl_ft = 100;
-			ap2fg.roll_deg = 10;
-			ap2fg.pitch_deg = 10;
-			ap2fg.heading_deg = 10;
+			ap2fg.roll_deg = 2.0;
+			ap2fg.pitch_deg = 3.0;
+			ap2fg.heading_deg = 4.0;
 	//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
 	//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
 	//		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
