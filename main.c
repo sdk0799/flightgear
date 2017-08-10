@@ -18,6 +18,9 @@
 /*转换int或者short的字节顺序，该程序arm平台为大端模式，地面站x86架构为小端模式*/
 #include <byteswap.h>
 
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
 
 #include "maintask.h"
 #include "utility.h"
@@ -33,6 +36,9 @@ T_GLOBAL  gblState;
 T_AP2FG  ap2fg;
 T_FG2AP fg2ap;
 T_AP2FG  ap2fg_send;
+
+
+T_AP2FG  ap2fg_recv;
 
 
 
@@ -117,51 +123,52 @@ int main()
 		/*loopslow 慢循环*/
 		if(0 == main_task.maintask_cnt%LOOP_SLOW_TICK)
 		{
-		sem_getvalue(&sem_loopslow,&sem_loopslow_cnt);
-		if(sem_loopslow_cnt<1)
-		{
-		sem_post (&sem_loopslow);        /*释放信号量*/
-		}
+			sem_getvalue(&sem_loopslow,&sem_loopslow_cnt);
+			if(sem_loopslow_cnt<1)
+			{
+			sem_post (&sem_loopslow);        /*释放信号量*/
+			}
 
-		//打印当前系统运行时间
-		float system_running_time=0.0;
-		system_running_time=clock_gettime_s();
-		printf("系统从开启到当前时刻运行的时间%f[s]\n",system_running_time);
+			//打印当前系统运行时间
+			float system_running_time=0.0;
+			system_running_time=clock_gettime_s();
+			printf("系统从开启到当前时刻运行的时间%f[s]\n",system_running_time);
 
-		/*
-		* 可以直接把程序写在这里也可以写在loopslow函数里
-		*/
-		ap2fg.throttle0 = 1;
-		ap2fg.throttle1 = 1;
-		ap2fg.throttle2 = 1;
-		ap2fg.throttle3 = 1;
-		ap2fg.latitude_deg = 100;
-		ap2fg.longitude_deg = 100;
-		ap2fg.altitude_ft = 100;
-		ap2fg.altitude_agl_ft = 100;
-		ap2fg.roll_deg = 100;
-		ap2fg.pitch_deg = 100;
-		ap2fg.heading_deg = 100;
-//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
-//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
-//		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
+			/*
+			* 可以直接把程序写在这里也可以写在loopslow函数里
+			*/
+			ap2fg.throttle0 = 0.9;
+			ap2fg.throttle1 = 0.9;
+			ap2fg.throttle2 = 0.9;
+			ap2fg.throttle3 = 0.9;
+			ap2fg.latitude_deg = 100;
+			ap2fg.longitude_deg = 100;
+			ap2fg.altitude_ft = 100;
+			ap2fg.altitude_agl_ft = 100;
+			ap2fg.roll_deg = 100;
+			ap2fg.pitch_deg = 100;
+			ap2fg.heading_deg = 100;
+	//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
+	//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
+	//		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
 
-		memcpy(&ap2fg_send,&ap2fg,sizeof(ap2fg));
-		ap2fg_send.throttle0=__bswap_64(ap2fg_send.throttle0);
-		ap2fg_send.throttle1=__bswap_64(ap2fg_send.throttle1);
-		ap2fg_send.throttle2=__bswap_64(ap2fg_send.throttle2);
-		ap2fg_send.throttle3=__bswap_64(ap2fg_send.throttle3);
-		ap2fg_send.latitude_deg=__bswap_64(ap2fg_send.latitude_deg);
-		ap2fg_send.longitude_deg=__bswap_64(ap2fg_send.longitude_deg);
-		ap2fg_send.altitude_ft=__bswap_64(ap2fg_send.altitude_ft);
-		ap2fg_send.altitude_agl_ft=__bswap_64(ap2fg_send.altitude_agl_ft);
-		ap2fg_send.roll_deg=__bswap_64(ap2fg_send.roll_deg);
-		ap2fg_send.pitch_deg=__bswap_64(ap2fg_send.pitch_deg);
-		ap2fg_send.heading_deg=__bswap_64(ap2fg_send.heading_deg);
+			memcpy(&ap2fg_send,&ap2fg,sizeof(ap2fg));
+			ap2fg_send.throttle0=hton_double(ap2fg_send.throttle0);
+			ap2fg_send.throttle1=hton_double(ap2fg_send.throttle1);
+			ap2fg_send.throttle2=hton_double(ap2fg_send.throttle2);
+			ap2fg_send.throttle3=hton_double(ap2fg_send.throttle3);
+			ap2fg_send.latitude_deg=hton_double(ap2fg_send.latitude_deg);
+			ap2fg_send.longitude_deg=hton_double(ap2fg_send.longitude_deg);
+			ap2fg_send.altitude_ft=hton_double(ap2fg_send.altitude_ft);
+			ap2fg_send.altitude_agl_ft=hton_double(ap2fg_send.altitude_agl_ft);
+			ap2fg_send.roll_deg=hton_double(ap2fg_send.roll_deg);
+			ap2fg_send.pitch_deg=hton_double(ap2fg_send.pitch_deg);
+			ap2fg_send.heading_deg=hton_double(ap2fg_send.heading_deg);
 
 
 
-		send_udp_data(&ap2fg_send,sizeof(ap2fg_send));
+			sendto(fd_sock_send, &ap2fg_send, sizeof(ap2fg_send), 0, (struct sockaddr *)&udp_sendto_addr, sizeof(udp_sendto_addr));
+			//send_udp_data((unsigned char*)&ap2fg_send,sizeof(ap2fg_send));
 
 
 

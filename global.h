@@ -45,6 +45,8 @@ extern T_FG2AP fg2ap;
 extern T_AP2FG  ap2fg_send;
 
 
+extern T_AP2FG  ap2fg_recv;
+
 
 extern double latitude;
 extern double longitude;

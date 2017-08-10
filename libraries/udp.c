@@ -70,7 +70,8 @@ struct T_UDP_DEVICE udp_device;
 static struct sockaddr_in udp_mysendto_addr;//服务器用于接收的socket
 
 static struct sockaddr_in udp_myrecv_addr;//服务器用于接收的socket
-static struct sockaddr_in udp_sendto_addr;//服务器用于发送的socket
+//static struct sockaddr_in udp_sendto_addr;//服务器用于发送的socket
+struct sockaddr_in udp_sendto_addr;//服务器用于发送的socket
 static struct sockaddr_in client_addr;//服务器用来保存客户端的发送socket，把客户端的socket属性保存在client_addr
 
 int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_myrecv)
@@ -116,7 +117,7 @@ int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_my
     /*
      * 绑定发送的端口
      */
-
+#if 0
     /*设置本机的接收ip地址和端口，但是接收的ip不指定，因为任何的ip都有可能给我发数据呀*/
 	sockaddr_size = sizeof(struct sockaddr_in);
 	bzero((char*)&udp_mysendto_addr, sockaddr_size);
@@ -136,7 +137,7 @@ int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_my
     	 printf("bind success\n");
 
      }
-
+#endif
 
 
 
@@ -283,8 +284,9 @@ int read_udp_data(unsigned char *buf, unsigned int len)
 
     printf("sizeof(fg2ap)=%d\n",sizeof(fg2ap));
     printf("sizeof(uint64_t)=%d\n",sizeof(uint64_t));
+#endif
 
-
+#if 1
     memcpy(&fg2ap,buf,sizeof(fg2ap));
     fg2ap.pitch_deg= ntoh_double(fg2ap.pitch_deg);
     fg2ap.heading_deg= ntoh_double(fg2ap.heading_deg);
@@ -306,8 +308,13 @@ int read_udp_data(unsigned char *buf, unsigned int len)
 
     printf("俯仰=%f，航向=%f\n",fg2ap.pitch_deg,fg2ap.heading_deg);
     printf("纬度=%f，经度=%f\n",fg2ap.latitude_deg,fg2ap.longitude_deg);
-    #endif
+#else
+    memcpy(&ap2fg_recv,buf,sizeof(ap2fg_recv));
+    ap2fg_recv.throttle0= ntoh_double(ap2fg_recv.throttle0);
 
+    printf("ap2fg_recv.throttle0=%f\n",ap2fg_recv.throttle0);
+
+#endif
     return 0;
 
     memcpy(_buffer, buf, len);

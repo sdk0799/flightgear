@@ -8,6 +8,10 @@
 #ifndef UDP_H_
 #define UDP_H_
 
+
+#include <stdint.h>
+
+
 /*
  * 为了进行转换 bsd socket提供了转换的函数 有下面四个
  * htons 把unsigned short类型从主机序转换到网络序
@@ -33,10 +37,11 @@ uint32_t x;
 }
  */
 
-//#define IP_SEND_TO "127.0.0.1"
-#define IP_SEND_TO "10.108.17.250"
+#define IP_SEND_TO "127.0.0.1"
+//#define IP_SEND_TO "10.108.17.250"
 #define PORT_SENT_TO 49000
 #define PORT_RECEIVE 49005
+//#define PORT_RECEIVE 49000
 
 struct T_UDP_DEVICE
 {
@@ -55,7 +60,15 @@ int close_udp_dev();
 /*udp_recvbuf_and_process需要调用read函数来解析数据包获取实际数据*/
 void udp_recvbuf_and_process(void * ptr_udp_device);
 
+uint64_t htonll(uint64_t n) ;
+uint64_t ntohll(uint64_t n) ;
 
+double ntoh_double(double net_double) ;
+double hton_double(double host_double) ;
+
+extern struct sockaddr_in udp_sendto_addr;//服务器用于发送的socket
+extern int fd_sock_send;
+extern int fd_sock_recv;
 
 
 
