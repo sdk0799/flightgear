@@ -36,9 +36,9 @@ T_AP2FG  ap2fg_send;
 
 
 
-int latitude;
-int longitude;
-int altitude;
+double latitude;
+double longitude;
+double altitude;
 
 int main()
 {
@@ -131,10 +131,10 @@ int main()
 		/*
 		* 可以直接把程序写在这里也可以写在loopslow函数里
 		*/
-		ap2fg.throttle0 = 1500;
-		ap2fg.throttle1 = 1500;
-		ap2fg.throttle2 = 1500;
-		ap2fg.throttle3 = 1500;
+		ap2fg.throttle0 = 1;
+		ap2fg.throttle1 = 1;
+		ap2fg.throttle2 = 1;
+		ap2fg.throttle3 = 1;
 		ap2fg.latitude_deg = 100;
 		ap2fg.longitude_deg = 100;
 		ap2fg.altitude_ft = 100;
@@ -147,17 +147,17 @@ int main()
 //		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
 
 		memcpy(&ap2fg_send,&ap2fg,sizeof(ap2fg));
-		ap2fg_send.throttle0=__bswap_32(ap2fg_send.throttle0);
-		ap2fg_send.throttle1=__bswap_32(ap2fg_send.throttle1);
-		ap2fg_send.throttle2=__bswap_32(ap2fg_send.throttle2);
-		ap2fg_send.throttle3=__bswap_32(ap2fg_send.throttle3);
-		ap2fg_send.latitude_deg=__bswap_32(ap2fg_send.latitude_deg);
-		ap2fg_send.longitude_deg=__bswap_32(ap2fg_send.longitude_deg);
-		ap2fg_send.altitude_ft=__bswap_32(ap2fg_send.altitude_ft);
-		ap2fg_send.altitude_agl_ft=__bswap_32(ap2fg_send.altitude_agl_ft);
-		ap2fg_send.roll_deg=__bswap_32(ap2fg_send.roll_deg);
-		ap2fg_send.pitch_deg=__bswap_32(ap2fg_send.pitch_deg);
-		ap2fg_send.heading_deg=__bswap_32(ap2fg_send.heading_deg);
+		ap2fg_send.throttle0=__bswap_64(ap2fg_send.throttle0);
+		ap2fg_send.throttle1=__bswap_64(ap2fg_send.throttle1);
+		ap2fg_send.throttle2=__bswap_64(ap2fg_send.throttle2);
+		ap2fg_send.throttle3=__bswap_64(ap2fg_send.throttle3);
+		ap2fg_send.latitude_deg=__bswap_64(ap2fg_send.latitude_deg);
+		ap2fg_send.longitude_deg=__bswap_64(ap2fg_send.longitude_deg);
+		ap2fg_send.altitude_ft=__bswap_64(ap2fg_send.altitude_ft);
+		ap2fg_send.altitude_agl_ft=__bswap_64(ap2fg_send.altitude_agl_ft);
+		ap2fg_send.roll_deg=__bswap_64(ap2fg_send.roll_deg);
+		ap2fg_send.pitch_deg=__bswap_64(ap2fg_send.pitch_deg);
+		ap2fg_send.heading_deg=__bswap_64(ap2fg_send.heading_deg);
 
 
 

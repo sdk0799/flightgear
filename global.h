@@ -13,29 +13,29 @@
 
 typedef struct tagGLOBAL
 {
-	int cnt;
+	double cnt;
 
 }T_GLOBAL;
 
 typedef struct tagAP2FG{
-  int throttle0;//[0..1], 0-3为四个电机的控制量
-  int throttle1;
-  int throttle2;
-  int throttle3;
-  int latitude_deg;//[deg],飞行器当前纬度坐标
-  int longitude_deg;//[deg],飞行器当前经度坐标
-  int altitude_ft;//[ft],飞行器当前飞行高度
-  int altitude_agl_ft;//[ft],
-  int roll_deg;//[deg]滚转角
-  int pitch_deg;//[deg]俯仰角
-  int heading_deg;//[deg]机头朝向
+  double throttle0;//[0..1], 0-3为四个电机的控制量
+  double throttle1;
+  double throttle2;
+  double throttle3;
+  double latitude_deg;//[deg],飞行器当前纬度坐标
+  double longitude_deg;//[deg],飞行器当前经度坐标
+  double altitude_ft;//[ft],飞行器当前飞行高度
+  double altitude_agl_ft;//[ft],
+  double roll_deg;//[deg]滚转角
+  double pitch_deg;//[deg]俯仰角
+  double heading_deg;//[deg]机头朝向
 }T_AP2FG;
 
 typedef struct tagFG2AP{
-  int pitch_deg;//地面海拔高度，用于计算飞行器是否会撞上山
-  int latitude_deg;//机场的纬度坐标，只在初始化时使用一次
-  int longitude_deg;//机场的经度坐标，只在初始化时使用一次
-  int heading_deg;//机头初始朝向
+  double pitch_deg;//地面海拔高度，用于计算飞行器是否会撞上山
+  double latitude_deg;//机场的纬度坐标，只在初始化时使用一次
+  double longitude_deg;//机场的经度坐标，只在初始化时使用一次
+  double heading_deg;//机头初始朝向
 }T_FG2AP;
 
 
@@ -46,9 +46,9 @@ extern T_AP2FG  ap2fg_send;
 
 
 
-extern int latitude;
-extern int longitude;
-extern int altitude;
+extern double latitude;
+extern double longitude;
+extern double altitude;
 
 
 

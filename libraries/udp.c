@@ -9,6 +9,7 @@
 
 
 #include<stdio.h>
+#include <stdint.h>
 #include<sys/types.h>
 #include<sys/stat.h>
 #include<sys/select.h>
@@ -36,6 +37,30 @@
 #include "udp.h"
 
 #include "global.h"
+
+
+uint64_t htonll(uint64_t n) {
+return (((uint64_t)htonl(n)) << 32) | htonl(n >> 32);
+}
+uint64_t ntohll(uint64_t n) {
+return (((uint64_t)ntohl(n)) << 32) | ntohl(n >> 32);
+}
+
+double ntoh_double(double net_double) {
+uint64_t host_int64;
+host_int64 = ntohll(*((uint64_t *) &net_double));
+return *((double *) &host_int64);
+}
+
+double hton_double(double host_double) {
+uint64_t net_int64;
+net_int64 = htonll(*((uint64_t *) &host_double));
+return *((double *) &net_int64);
+}
+
+
+
+
 
 int fd_sock_send;
 int fd_sock_recv;
@@ -179,13 +204,16 @@ int send_udp_data(unsigned char *buf, unsigned int len)
 
     /*
      * 帧尾0x12345678 4个字节
+     * 没有帧尾
      */
     memcpy(m_sendbuf, buf, len);
+    m_len=len;
 
-
+#if 0
     m_tail = htonl(UDP_PACKET_END);
     memcpy(&m_sendbuf[len], &m_tail, 4);
     m_len = 4 + len;
+#endif
 
 #if 0
     int i=0;
@@ -195,6 +223,7 @@ int send_udp_data(unsigned char *buf, unsigned int len)
     }
     printf("\n");
 #endif
+    printf("send len=%d\n",m_len);
 
     sendto(fd_sock_send, m_sendbuf, m_len, 0, (struct sockaddr *)&udp_sendto_addr, sizeof(struct sockaddr_in));
 
@@ -252,16 +281,31 @@ int read_udp_data(unsigned char *buf, unsigned int len)
     }
     printf("\n");
 
+    printf("sizeof(fg2ap)=%d\n",sizeof(fg2ap));
+    printf("sizeof(uint64_t)=%d\n",sizeof(uint64_t));
+
+
     memcpy(&fg2ap,buf,sizeof(fg2ap));
-    fg2ap.pitch_deg=__bswap_32(fg2ap.pitch_deg);
-    fg2ap.heading_deg=__bswap_32(fg2ap.heading_deg);
-    fg2ap.longitude_deg=__bswap_32(fg2ap.longitude_deg);
-    fg2ap.latitude_deg=__bswap_32(fg2ap.latitude_deg);
+    fg2ap.pitch_deg= ntoh_double(fg2ap.pitch_deg);
+    fg2ap.heading_deg= ntoh_double(fg2ap.heading_deg);
+    fg2ap.longitude_deg= ntoh_double(fg2ap.longitude_deg);
+    fg2ap.latitude_deg= ntoh_double(fg2ap.latitude_deg);
 
 
 
-    printf("俯仰=%d，航向=%d\n",fg2ap.pitch_deg,fg2ap.heading_deg);
-    printf("纬度=%d，经度=%d\n",fg2ap.latitude_deg,fg2ap.longitude_deg);
+//	fg2ap.pitch_deg=(double)(*((uint64_t*)(&fg2ap.pitch_deg)));
+//	fg2ap.heading_deg=(double)(*((uint64_t*)(&fg2ap.heading_deg)));
+//	fg2ap.longitude_deg=(double)(*(uint64_t*)&fg2ap.longitude_deg);
+//	fg2ap.latitude_deg=(double)(*(uint64_t*)&fg2ap.latitude_deg);
+//    fg2ap.pitch_deg=(double)__bswap_64(*(uint64_t*)&fg2ap.pitch_deg);
+//    fg2ap.heading_deg=(double)__bswap_64(*(uint64_t*)&fg2ap.heading_deg);
+//    fg2ap.longitude_deg=(double)__bswap_64(*(uint64_t*)&fg2ap.longitude_deg);
+//    fg2ap.latitude_deg=(double)__bswap_64(*(uint64_t*)&fg2ap.latitude_deg);
+
+
+
+    printf("俯仰=%f，航向=%f\n",fg2ap.pitch_deg,fg2ap.heading_deg);
+    printf("纬度=%f，经度=%f\n",fg2ap.latitude_deg,fg2ap.longitude_deg);
     #endif
 
     return 0;
