@@ -100,6 +100,16 @@ int main()
 	int mseconds=MAINTASK_TICK_TIME_MS*(1e3);/*每个tick为20毫秒，也就是20000微秒*/
 	struct timeval maintask_tick;
 
+
+	static double delta_0=0.1;
+	static double delta_1=0.1;
+	static double delta_2=0.1;
+	static double delta_3=0.1;
+	ap2fg.throttle0 = 0.2;
+	ap2fg.throttle1 = 0.3;
+	ap2fg.throttle2 = 0.4;
+	ap2fg.throttle3 = 0.5;
+
 	/*
 	* 开始maintask任务，maintask任务按最小的tick执行，周期时间为20ms，执行一次
 	*/
@@ -138,17 +148,40 @@ int main()
 			/*
 			* 可以直接把程序写在这里也可以写在loopslow函数里
 			*/
-			ap2fg.throttle0 = 0.2;
-			ap2fg.throttle1 = 0.3;
-			ap2fg.throttle2 = 0.4;
-			ap2fg.throttle3 = 0.5;
-			ap2fg.latitude_deg = 100;
-			ap2fg.longitude_deg = 100;
+
+
+			if(ap2fg.throttle0>=1||ap2fg.throttle0<=0.1)
+			{
+				delta_0=-delta_0;
+			}
+			if(ap2fg.throttle1>=1||ap2fg.throttle1<=0.1)
+			{
+				delta_1=-delta_1;
+			}
+			if(ap2fg.throttle2>=1||ap2fg.throttle2<=0.1)
+			{
+				delta_2=-delta_2;
+			}
+			if(ap2fg.throttle3>=1||ap2fg.throttle3<=0.1)
+			{
+				delta_3=-delta_3;
+			}
+
+			ap2fg.throttle0 = ap2fg.throttle0 +delta_0;
+			ap2fg.throttle1 = ap2fg.throttle1 +delta_1;
+			ap2fg.throttle2 = ap2fg.throttle2 +delta_2;
+			ap2fg.throttle3 = ap2fg.throttle3 +delta_3;
+//			ap2fg.throttle0 = 0.2;
+//			ap2fg.throttle1 = 0.3;
+//			ap2fg.throttle2 = 0.4;
+//			ap2fg.throttle3 = 0.5;
+			ap2fg.latitude_deg = 40;
+			ap2fg.longitude_deg = 117;
 			ap2fg.altitude_ft = 30;
 			ap2fg.altitude_agl_ft = 100;
 			ap2fg.roll_deg = 2.0;
-			ap2fg.pitch_deg = 3.0;
-			ap2fg.heading_deg = 4.0;
+			ap2fg.pitch_deg = 31.0;
+			ap2fg.heading_deg = 38.0;
 	//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
 	//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
 	//		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
@@ -168,8 +201,8 @@ int main()
 
 
 
-			sendto(fd_sock_send, &ap2fg_send, sizeof(ap2fg_send), 0, (struct sockaddr *)&udp_sendto_addr, sizeof(udp_sendto_addr));
-			//send_udp_data((unsigned char*)&ap2fg_send,sizeof(ap2fg_send));
+			//sendto(fd_sock_send, &ap2fg_send, sizeof(ap2fg_send), 0, (struct sockaddr *)&udp_sendto_addr, sizeof(udp_sendto_addr));
+			send_udp_data((unsigned char*)&ap2fg_send,sizeof(ap2fg_send));
 
 
 

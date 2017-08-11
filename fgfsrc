@@ -1,0 +1,52 @@
+	
+	#--fg-root=/usr/share/games/flightgear/data
+	--fg-root=/usr/share/games/flightgear
+
+	--aircraft=arducopter
+
+	--geometry=800x600
+	#--aircraft=arducopter
+	--aircraft=ufo
+	#--native-fdm=socket,out,50,127.0.0.1,49005,udp 
+	#--generic=socket,in,50,127.0.0.1,49000,udp,quadhil 
+	#--native-fdm=socket,out,1,localhost,49005,udp
+	--generic=socket,out,1,localhost,49005,udp,quadhil  
+	--generic=socket,in,1,localhost,49000,udp,quadhil 
+
+	--fdm=external 
+	#--prop:/logging/log/filename=fg_record.csv 
+	#--log-level=info 
+	--roll=3 
+	--pitch=5 
+	#--wind=0@0 
+	--turbulence=0.0 
+	--prop:/sim/frame-rate-throttle-hz=30 
+	--timeofday=noon 
+	--shading-flat 
+	--fog-disable 
+	--disable-specular-highlight 
+	#--disable-skyblend 
+	--disable-random-objects 
+	--disable-panel 
+	--disable-horizon-effect 
+	--disable-clouds 
+	--disable-anti-alias-hud
+
+
+	### Initial position
+	#
+	#--airport=KSFO
+	#--runway=28R
+
+	###Environment
+	#
+	#--enable-horizon-effect
+	#--enable-specular-highlight
+	#--enable-ai-models
+	#--enable-clouds3d
+	#--shading-flat
+	#--fog-nicest
+	#--enable-random-objects
+	#--enable-auto-coordination
+
+

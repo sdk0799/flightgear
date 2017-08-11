@@ -118,7 +118,6 @@ int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_my
      * 绑定发送的端口
      */
 #if 1
-    /*设置本机的接收ip地址和端口，但是接收的ip不指定，因为任何的ip都有可能给我发数据呀*/
 	sockaddr_size = sizeof(struct sockaddr_in);
 	bzero((char*)&udp_mysendto_addr, sockaddr_size);
 	udp_mysendto_addr.sin_family = AF_INET;
@@ -150,7 +149,10 @@ int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_my
     bzero((char*)&udp_myrecv_addr, sockaddr_size);
     udp_myrecv_addr.sin_family = AF_INET;
     udp_myrecv_addr.sin_addr.s_addr = INADDR_ANY;//任意地址
-    udp_myrecv_addr.sin_port = htons(port_myrecv);
+    //udp_myrecv_addr.sin_addr.s_addr = inet_addr("10.108.16.163");;//任意地址
+
+    //udp_myrecv_addr.sin_port = htons(port_myrecv);
+    udp_myrecv_addr.sin_port = htons(49005);
     /*建立“接收”套接字*/
     fd_sock_recv = socket(AF_INET, SOCK_DGRAM, 0);
     if (fd_sock_recv == -1)

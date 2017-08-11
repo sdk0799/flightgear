@@ -37,8 +37,16 @@ uint32_t x;
 }
  */
 
+/*
+ * 原来以为程序和运行flightgear程序不在同一台电脑上
+ * 可以运行，但是试验了好多次都失败了，放弃，
+ * 就只用127.0.0.1吧
+ */
 #define IP_SEND_TO "127.0.0.1"
 //#define IP_SEND_TO "10.108.17.250"
+//#define IP_SEND_TO "10.108.17.234"
+//#define IP_SEND_TO "10.108.17.235"
+
 #define PORT_SENT_TO 49000
 #define PORT_RECEIVE 49005
 //#define PORT_RECEIVE 49000
