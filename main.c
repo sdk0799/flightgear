@@ -175,6 +175,7 @@ int main()
 //			ap2fg.throttle1 = 0.3;
 //			ap2fg.throttle2 = 0.4;
 //			ap2fg.throttle3 = 0.5;
+#if 0
 			ap2fg.latitude_deg = 40;
 			ap2fg.longitude_deg = 117;
 			ap2fg.altitude_ft = 30;
@@ -182,6 +183,8 @@ int main()
 			ap2fg.roll_deg = 2.0;
 			ap2fg.pitch_deg = 0.0;
 			ap2fg.heading_deg = 38.0;
+#endif
+
 	//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
 	//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
 	//		ap2fg.heading_deg = (ap2fg.throttle0 + ap2fg.throttle2 - ap2fg.throttle1 - ap2fg.throttle3)*10;
@@ -191,6 +194,7 @@ int main()
 			ap2fg_send.throttle1=hton_double(ap2fg_send.throttle1);
 			ap2fg_send.throttle2=hton_double(ap2fg_send.throttle2);
 			ap2fg_send.throttle3=hton_double(ap2fg_send.throttle3);
+#if 0
 			ap2fg_send.latitude_deg=hton_double(ap2fg_send.latitude_deg);
 			ap2fg_send.longitude_deg=hton_double(ap2fg_send.longitude_deg);
 			ap2fg_send.altitude_ft=hton_double(ap2fg_send.altitude_ft);
@@ -198,7 +202,7 @@ int main()
 			ap2fg_send.roll_deg=hton_double(ap2fg_send.roll_deg);
 			ap2fg_send.pitch_deg=hton_double(ap2fg_send.pitch_deg);
 			ap2fg_send.heading_deg=hton_double(ap2fg_send.heading_deg);
-
+#endif
 
 
 			//sendto(fd_sock_send, &ap2fg_send, sizeof(ap2fg_send), 0, (struct sockaddr *)&udp_sendto_addr, sizeof(udp_sendto_addr));

@@ -17,11 +17,13 @@ typedef struct tagGLOBAL
 
 }T_GLOBAL;
 
-typedef struct tagAP2FG{
+typedef struct tagAP2FG
+{
   double throttle0;//[0..1], 0-3为四个电机的控制量
   double throttle1;
   double throttle2;
   double throttle3;
+#if 0
   double latitude_deg;//[deg],飞行器当前纬度坐标
   double longitude_deg;//[deg],飞行器当前经度坐标
   double altitude_ft;//[ft],飞行器当前飞行高度
@@ -29,12 +31,14 @@ typedef struct tagAP2FG{
   double roll_deg;//[deg]滚转角
   double pitch_deg;//[deg]俯仰角
   double heading_deg;//[deg]机头朝向
+#endif
 }T_AP2FG;
 
-typedef struct tagFG2AP{
-  double pitch_deg;//地面海拔高度，用于计算飞行器是否会撞上山
+typedef struct tagFG2AP
+{
   double latitude_deg;//机场的纬度坐标，只在初始化时使用一次
   double longitude_deg;//机场的经度坐标，只在初始化时使用一次
+  double pitch_deg;
   double heading_deg;//机头初始朝向
 }T_FG2AP;
 
