@@ -1,0 +1,13 @@
+
+  --fg-root=/usr/share/games/flightgear
+#  --aircraft=c172p
+--aircraft=arducopter
+  --control=joystick
+  --disable-random-objects
+  --fdm=external
+  --vc=0
+  --bpp=32
+  --timeofday=noon
+  --native-fdm=socket,in,1,,49000,udp
+--httpd=5400
+

@@ -288,13 +288,21 @@ int main()
 				static unsigned char  flag = 1;
 				if (flag)
 				{
-					roll += 5.0;
+					pitch += 5.0;
+					yaw+=10.0;
+					latitude+=5;
+					longitude+=5;
+
 				}
 				else
 				{
-					roll -= 5.0;
+					pitch -= 5.0;
+					yaw-=10.0;
+					latitude-=5;
+					longitude-=5;
 				}
 				flag = !flag;
+
 
 
 
