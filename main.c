@@ -180,7 +180,7 @@ int main()
 			ap2fg.altitude_ft = 30;
 			ap2fg.altitude_agl_ft = 100;
 			ap2fg.roll_deg = 2.0;
-			ap2fg.pitch_deg = 31.0;
+			ap2fg.pitch_deg = 0.0;
 			ap2fg.heading_deg = 38.0;
 	//		ap2fg.roll_deg = (ap2fg.throttle1 - ap2fg.throttle0)*10;
 	//		ap2fg.pitch_deg = (ap2fg.throttle2 - ap2fg.throttle3)*10;
