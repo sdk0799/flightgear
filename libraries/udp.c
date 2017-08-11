@@ -61,6 +61,21 @@ return *((double *) &net_int64);
 
 
 
+float ntoh_float(float net_float) {
+	uint32_t host_int32;
+	host_int32 = ntohl(*((uint32_t *) &net_float));
+	return *((double *) &host_int32);
+
+}
+float hton_float(float host_float) {
+	uint32_t net_int32;
+	net_int32 = htonl(*((uint32_t *) &host_float));
+	return *((double *) &net_int32);
+
+}
+
+
+
 
 int fd_sock_send;
 int fd_sock_recv;
@@ -126,7 +141,7 @@ int open_udp_dev(char* ip_sendto, unsigned int port_sendto, unsigned int port_my
 	//udp_mysendto_addr.sin_port = htons(49000);
 	udp_mysendto_addr.sin_port = htons(49000);//发送的端口跟目标ip地址的端口一致，我从49000发送，另一边也从49000接收
 
-//#else
+#else
     /* 绑定套接口 */
      //if(-1 == (bind(fd_sock_send,(struct sockaddr*)&udp_sendto_addr,sizeof(struct sockaddr_in))))
     if(-1 == (bind(fd_sock_send,(struct sockaddr*)&udp_mysendto_addr,sizeof(struct sockaddr_in))))

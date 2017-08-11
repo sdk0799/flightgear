@@ -74,6 +74,13 @@ uint64_t ntohll(uint64_t n) ;
 double ntoh_double(double net_double) ;
 double hton_double(double host_double) ;
 
+
+
+float ntoh_float(float net_float) ;
+float hton_float(float host_float) ;
+
+
+
 extern struct sockaddr_in udp_sendto_addr;//服务器用于发送的socket
 extern int fd_sock_send;
 extern int fd_sock_recv;

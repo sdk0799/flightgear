@@ -27,6 +27,26 @@
 #include "udp.h"
 #include "global.h"
 
+
+#include "fdm.h"
+
+double htond (double x)
+{
+    int * p = (int*)&x;
+    int tmp = p[0];
+    p[0] = htonl(p[1]);
+    p[1] = htonl(tmp);
+
+    return x;
+}
+
+float htonf (float x)
+{
+    int * p = (int *)&x;
+    *p = htonl(*p);
+    return x;
+}
+
 #define TEST
 #ifdef TEST
 char udp_string[]="0123456";
@@ -40,7 +60,9 @@ T_AP2FG  ap2fg_send;
 
 T_AP2FG  ap2fg_recv;
 
+T_FDM fdm;
 
+#define D2R (3.14159 / 180.0)
 
 double latitude;
 double longitude;
@@ -51,6 +73,10 @@ int main()
 	/*
 	* 这一部分写程序的初始化
 	*/
+
+
+	printf("sizeof(float)=%d\n",sizeof(float));
+	printf("sizeof(fdm)=%d\n",sizeof(fdm));
 
 	//open_udp_dev(IP_SEND_TO, 49000, PORT_RECEIVE);
 	open_udp_dev(IP_SEND_TO, PORT_SENT_TO, PORT_RECEIVE);
@@ -109,6 +135,20 @@ int main()
 	ap2fg.throttle1 = 0.3;
 	ap2fg.throttle2 = 0.4;
 	ap2fg.throttle3 = 0.5;
+
+
+
+	double latitude = 45.59823; // degs
+	double longitude = -120.69202; // degs
+	double altitude = 150.0; // meters above sea level
+
+	float roll = 0.0; // degs
+	float pitch = 0.0; // degs
+	float yaw = 0.0; // degs
+
+	float visibility = 5000.0; // meters
+
+
 
 	/*
 	* 开始maintask任务，maintask任务按最小的tick执行，周期时间为20ms，执行一次
@@ -204,9 +244,70 @@ int main()
 			ap2fg_send.heading_deg=hton_double(ap2fg_send.heading_deg);
 #endif
 
+#if 1
+			fdm.psi=0.50;//yaw偏航角
+			fdm.phi=0.5;//roll滚转角
+			fdm.theta=0.5;//pitch俯仰角
+
+			fdm.psi=hton_float(fdm.psi);
+			fdm.phi=hton_float(fdm.phi);
+			fdm.theta=hton_float(fdm.theta);
+
+			fdm.longitude=100.0;
+			fdm.latitude=10.0;
+
+
+
+
+
+				memset(&fdm,0,sizeof(fdm));
+				fdm.version = htonl(FG_NET_FDM_VERSION);
+
+				fdm.latitude = htond(latitude * D2R);
+				fdm.longitude = htond(longitude * D2R);
+				fdm.altitude = htond(altitude);
+
+				fdm.phi = htonf(roll * D2R);
+				fdm.theta = htonf(pitch * D2R);
+				fdm.psi = htonf(yaw * D2R);
+
+				fdm.num_engines = htonl(1);
+
+				fdm.num_tanks = htonl(1);
+				fdm.fuel_quantity[0] = htonf(100.0);
+
+				fdm.num_wheels = htonl(3);
+
+				fdm.cur_time = htonl(time(0));
+				fdm.warp = htonl(1);
+
+				fdm.visibility = htonf(visibility);
+
+
+
+				static unsigned char  flag = 1;
+				if (flag)
+				{
+					roll += 5.0;
+				}
+				else
+				{
+					roll -= 5.0;
+				}
+				flag = !flag;
+
+
+
+
+#endif
+
+
 
 			//sendto(fd_sock_send, &ap2fg_send, sizeof(ap2fg_send), 0, (struct sockaddr *)&udp_sendto_addr, sizeof(udp_sendto_addr));
-			send_udp_data((unsigned char*)&ap2fg_send,sizeof(ap2fg_send));
+			//send_udp_data((unsigned char*)&ap2fg_send,sizeof(ap2fg_send));
+
+			//send_udp_data((unsigned char*)&fdm,sizeof(fdm));
+			sendto(fd_sock_send, &fdm, sizeof(fdm), 0, (struct sockaddr *)&udp_sendto_addr, sizeof(udp_sendto_addr));
 
 
 
